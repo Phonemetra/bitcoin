@@ -3,7 +3,6 @@ dist: trusty
 os: linux
 language: generic
 python:
-    - "2.7.13"
     - "3.6.2"
 cache:
   directories:
@@ -24,6 +23,8 @@ env:
     - PYTHON_DEBUG=1
     - WINEDEBUG=fixme-all
   matrix:
+# Quantum   
+    - HOST=x86_64-unknown-linux-gnu PACKAGES="bc python3" DEP_OPTS="NO_QT=1" RUN_TESTS=true GOAL="install" BITCOIN_CONFIG="--enable-reduce-exports"
 # Quantum Debug
     - HOST=x86_64-unknown-linux-gnu PACKAGES="bc python3-zmq" DEP_OPTS="NO_QT=1 NO_UPNP=1 DEBUG=1" RUN_TESTS=true GOAL="install" BITCOIN_CONFIG="--enable-zmq --enable-glibc-back-compat --enable-reduce-exports CPPFLAGS=-DDEBUG_LOCKORDER"
 before_install:
@@ -32,7 +33,7 @@ install:
     - if [ -n "$DPKG_ADD_ARCH" ]; then sudo dpkg --add-architecture "$DPKG_ADD_ARCH" ; fi
     - if [ -n "$PACKAGES" ]; then travis_retry sudo apt-get update; fi
     - if [ -n "$PACKAGES" ]; then travis_retry sudo apt-get install --no-install-recommends --no-upgrade -qq $PACKAGES; fi
-    - sudo python setup.py -q install
+    - sudo python setup.py -q install; fi
 before_script:
     - if [ "$TRAVIS_EVENT_TYPE" = "pull_request" ]; then contrib/devtools/commit-script-check.sh $TRAVIS_COMMIT_RANGE; fi
     - unset CC; unset CXX
