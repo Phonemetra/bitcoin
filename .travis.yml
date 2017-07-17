@@ -3,6 +3,7 @@ dist: trusty
 os: linux
 language: generic
 python:
+    - "2.7.13"
     - "3.6.2"
 cache:
   directories:
@@ -24,7 +25,7 @@ env:
     - WINEDEBUG=fixme-all
   matrix:
 # Quantum
-    - HOST=x86_64-unknown-linux-gnu PACKAGES="bc python362" DEP_OPTS="NO_QT=1 NO_UPNP=1 DEBUG=1" RUN_TESTS=true GOAL="install" BITCOIN_CONFIG="--enable-zmq --enable-glibc-back-compat --enable-reduce-exports CPPFLAGS=-DDEBUG_LOCKORDER"
+    - HOST=x86_64-unknown-linux-gnu PACKAGES="bc python36" DEP_OPTS="NO_QT=1 NO_UPNP=1 DEBUG=1" RUN_TESTS=true GOAL="install" BITCOIN_CONFIG="--enable-zmq --enable-glibc-back-compat --enable-reduce-exports CPPFLAGS=-DDEBUG_LOCKORDER"
 before_install:
     - export PATH=$(echo $PATH | tr ':' "\n" | sed '/\/opt\/python/d' | tr "\n" ":" | sed "s|::|:|g")
 install:
