@@ -25,6 +25,9 @@ env:
     - PYTHON_DEBUG=1
     - WINEDEBUG=fixme-all
   matrix:
+    include:
+    - python: 3.4
+      env: TOXENV=flake8
 # Quantum
     - HOST=x86_64-unknown-linux-gnu PACKAGES="bc python3-zmq flake8" DEP_OPTS="NO_QT=1 NO_UPNP=1 DEBUG=1" RUN_TESTS=true GOAL="install" BITCOIN_CONFIG="--enable-zmq --enable-glibc-back-compat --enable-reduce-exports CPPFLAGS=-DDEBUG_LOCKORDER"
 before_install:
