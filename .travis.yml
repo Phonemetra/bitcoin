@@ -47,22 +47,22 @@ install:
     - if [ -n "$PACKAGES" ]; then travis_retry sudo apt-get install --no-install-recommends --no-upgrade -qq $PACKAGES; fi
     - sudo python setup.py -q install
 before_script:
-    - if [ "$TRAVIS_EVENT_TYPE" = "pull_request" ]; then contrib/devtools/commit-script-check.sh $TRAVIS_COMMIT_RANGE; fi
+    - if [ "$TRAVIS_EVENT_TYPE" = "pull_request" ]; then bitcoin/contrib/devtools/commit-script-check.sh $TRAVIS_COMMIT_RANGE; fi
     - unset CC; unset CXX
     - if [ "$CHECK_DOC" = 1 ]; then bitcoin/contrib/devtools/check-doc.py; fi
-    - mkdir -p depends/SDKs depends/sdk-sources
+    - mkdir -p depends/SDKs bitcoin/depends/sdk-sources
     - if [ -n "$OSX_SDK" -a ! -f bitcoin/depends/sdk-sources/MacOSX${OSX_SDK}.sdk.tar.gz ]; then curl --location --fail $SDK_URL/MacOSX${OSX_SDK}.sdk.tar.gz -o bitcoin/depends/sdk-sources/MacOSX${OSX_SDK}.sdk.tar.gz; fi
     - if [ -n "$OSX_SDK" -a -f bitcoin/depends/sdk-sources/MacOSX${OSX_SDK}.sdk.tar.gz ]; then tar -C depends/SDKs -xf bitcoin/depends/sdk-sources/MacOSX${OSX_SDK}.sdk.tar.gz; fi
     - make $MAKEJOBS -C depends HOST=$HOST $DEP_OPTS
 script:
-    - if [ "$CHECK_DOC" = 1 -a "$TRAVIS_REPO_SLUG" = "bitcoin/bitcoin" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then while read LINE; do travis_retry gpg --keyserver hkp://subset.pool.sks-keyservers.net --recv-keys $LINE; done < contrib/verify-commits/trusted-keys; fi
+    - if [ "$CHECK_DOC" = 1 -a "$TRAVIS_REPO_SLUG" = "bitcoin/bitcoin" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then while read LINE; do travis_retry gpg --keyserver hkp://subset.pool.sks-keyservers.net --recv-keys $LINE; done < bitcoin/contrib/verify-commits/trusted-keys; fi
     - if [ "$CHECK_DOC" = 1 -a "$TRAVIS_REPO_SLUG" = "bitcoin/bitcoin" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then git fetch --unshallow; fi
-    - if [ "$CHECK_DOC" = 1 -a "$TRAVIS_REPO_SLUG" = "bitcoin/bitcoin" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then contrib/verify-commits/verify-commits.sh; fi
+    - if [ "$CHECK_DOC" = 1 -a "$TRAVIS_REPO_SLUG" = "bitcoin/bitcoin" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then bitcoin/contrib/verify-commits/verify-commits.sh; fi
     - export TRAVIS_COMMIT_LOG=`git log --format=fuller -1`
     - if [ -n "$USE_SHELL" ]; then export CONFIG_SHELL="$USE_SHELL"; fi
     - OUTDIR=$BASE_OUTDIR/$TRAVIS_PULL_REQUEST/$TRAVIS_JOB_NUMBER-$HOST
-    - BITCOIN_CONFIG_ALL="--disable-dependency-tracking --prefix=$TRAVIS_BUILD_DIR/depends/$HOST --bindir=$OUTDIR/bin --libdir=$OUTDIR/lib"
-    - depends/$HOST/native/bin/ccache --max-size=$CCACHE_SIZE
+    - BITCOIN_CONFIG_ALL="--disable-dependency-tracking --prefix=$TRAVIS_BUILD_DIR/bitcoin/depends/$HOST --bindir=$OUTDIR/bin --libdir=$OUTDIR/lib"
+    - bitcoin/depends/$HOST/native/bin/ccache --max-size=$CCACHE_SIZE
     - test -n "$USE_SHELL" && eval '"$USE_SHELL" -c "./autogen.sh"' || ./autogen.sh
     - mkdir build && cd build
     - ../configure --cache-file=config.cache $BITCOIN_CONFIG_ALL $BITCOIN_CONFIG || ( cat config.log && false)
@@ -70,10 +70,10 @@ script:
     - cd bitcoin-$HOST
     - ./configure --cache-file=../config.cache $BITCOIN_CONFIG_ALL $BITCOIN_CONFIG || ( cat config.log && false)
     - make $MAKEJOBS $GOAL || ( echo "Build failure. Verbose build follows." && make $GOAL V=1 ; false )
-    - export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/depends/$HOST/lib
+    - export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/bitcoin/depends/$HOST/lib
     - if [ "$RUN_TESTS" = "true" ]; then travis_wait 30 make $MAKEJOBS check VERBOSE=1; fi
     - if [ "$TRAVIS_EVENT_TYPE" = "cron" ]; then extended="--extended --exclude pruning,dbcrash"; fi
-    - if [ "$RUN_TESTS" = "true" ]; then test/functional/test_runner.py --coverage --quiet ${extended}; fi
+    - if [ "$RUN_TESTS" = "true" ]; then bitcoin/test/functional/test_runner.py --coverage --quiet ${extended}; fi
 after_script:
     - echo $TRAVIS_COMMIT_RANGE
     - echo $TRAVIS_COMMIT_LOG
