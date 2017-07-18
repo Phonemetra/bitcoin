@@ -2,9 +2,11 @@ TurboCoin™ Quantum
 =====================================
 [![Build Status](https://travis-ci.org/Phonemetra/TurboCoin.svg?branch=master)](https://travis-ci.org/Phonemetra/TurboCoin)
 
+
 Bitcoin Core
 ----------------
 [![Build Status](https://travis-ci.org/bitcoin/bitcoin.svg?branch=master)](https://travis-ci.org/bitcoin/bitcoin)
+[![License](https://img.shields.io/apm/l/vim-mode.svg)](https://github.com/bitcoin/bitcoin/blob/master/LICENSE)
 
 Bitcoin is an experimental digital currency that enables instant payments to
 anyone, anywhere in the world. Bitcoin uses peer-to-peer technology to operate
@@ -25,5 +27,6 @@ information or see https://opensource.org/licenses/MIT.
 IBM Quantum Experience
 --------------------------
 [![Build Status](https://travis-ci.org/IBM/qiskit-api-py.svg?branch=master)](https://travis-ci.org/IBM/qiskit-api-py)
+[![License]( 	https://img.shields.io/hexpm/l/plug.svg)](https://github.com/IBM/qiskit-api-py/blob/master/LICENSE)
 
 The official API Client to use [IBM Quantum Experience](https://quantumexperience.ng.bluemix.net/) in Python.
